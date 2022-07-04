@@ -6,7 +6,7 @@
 /*   By: ooumlil <ooumlil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 20:33:40 by ooumlil           #+#    #+#             */
-/*   Updated: 2022/06/24 21:25:57 by ooumlil          ###   ########.fr       */
+/*   Updated: 2022/07/01 04:35:24 by ooumlil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,4 @@ int	check_arguments(char **av)
 		if (ft_atoi(av[i]) <= 0)
 			return (1);
 	return (0);
-}
-
-void	ft_putstr_fd(char *s, int fd)
-{
-	int	i;
-
-	i = 0;
-	if (!s)
-		return ;
-	while (s[i])
-		write(fd, &s[i++], 1);
 }
