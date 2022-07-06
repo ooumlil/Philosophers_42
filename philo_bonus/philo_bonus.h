@@ -6,7 +6,7 @@
 /*   By: ooumlil <ooumlil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 00:17:14 by ooumlil           #+#    #+#             */
-/*   Updated: 2022/07/05 04:59:18 by ooumlil          ###   ########.fr       */
+/*   Updated: 2022/07/06 05:13:46 by ooumlil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 typedef struct philo
 {
-	sem_t			*sem;
+	sem_t			*semap;
 	sem_t			*print;
 	int				is_eating;
 	int				is_dead;
@@ -43,12 +43,14 @@ typedef struct s_data{
 	int				full;
 	long long		time;
 	int				state;
+	int				*pid;
 }	t_data;
 
 int			ft_atoi(const char *str);
-void		arguments_check(char **av, int ac);
-void		assign_data_b(char **av, int ac, t_data *data);
-int			*create_children(t_data *data);
+void		check_nd_assign(char **av, int ac, t_data *data);
+void		fill_philos(t_data *data);
+void		init_sems(t_data *data);
+void		create_children(t_data *data);
 void		is_asleep(t_philo *philo);
 void		is_eating(t_philo *philo);
 void		*routine(void *arg);
@@ -56,6 +58,6 @@ void		print_behavior(t_philo *philo);
 void		ft_printstatus(t_philo *philo, char *s, int b);
 void		ft_usleep(int time);
 long long	get_time(void);
-void		kill_children(t_data *data, int *pid);
+void		kill_children(t_data *data);
 
 #endif

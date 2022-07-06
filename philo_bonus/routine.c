@@ -6,7 +6,7 @@
 /*   By: ooumlil <ooumlil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 00:57:08 by ooumlil           #+#    #+#             */
-/*   Updated: 2022/07/05 05:33:43 by ooumlil          ###   ########.fr       */
+/*   Updated: 2022/07/06 05:17:47 by ooumlil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,19 @@ void	is_asleep(t_philo *philo)
 	ft_printstatus(philo, "is sleeping", 1);
 	ft_usleep(philo->data->t2sleep);
 }
+
 void	is_eating(t_philo *philo)
 {
-	sem_wait(philo->sem);
+	sem_wait(philo->semap);
 	ft_printstatus(philo, "has taken a fork", 1);
 	philo->last_meal = get_time() - philo->data->time;
-	sem_wait(philo->sem);
+	sem_wait(philo->semap);
 	ft_printstatus(philo, "has taken a fork", 1);
 	ft_printstatus(philo, "is eating", 1);
 	philo->last_meal = get_time() - philo->data->time;
 	ft_usleep(philo->data->t2eat);
-	sem_post(philo->sem);
-	sem_post(philo->sem);
+	sem_post(philo->semap);
+	sem_post(philo->semap);
 }
 
 void	*routine(void *arg)
@@ -50,9 +51,9 @@ void	*routine(void *arg)
 
 void	print_behavior(t_philo *philo)
 {
-	philo->sem = sem_open("sem", O_CREAT, 0660, philo->data->ph_num);
+	philo->semap = sem_open("semap", O_CREAT, 0660, philo->data->ph_num);
 	philo->print = sem_open("print", O_CREAT, 0660, 1);
-	if (philo->sem == SEM_FAILED || philo->print == SEM_FAILED)
+	if (philo->semap == SEM_FAILED || philo->print == SEM_FAILED)
 		return (free(philo->ph), exit(0));
 	pthread_create(&philo->ph, NULL, routine, philo);
 	pthread_detach(philo->ph);
@@ -72,13 +73,12 @@ void	print_behavior(t_philo *philo)
 	return ;
 }
 
-int	*create_children(t_data *data)
+void	create_children(t_data *data)
 {
 	int	i;
-	int	*pids;
 	int	pid;
 
-	pids = (int *)malloc(sizeof(int) * data->ph_num);
+	data->pid = (int *)malloc(sizeof(int) * data->ph_num);
 	i = -1;
 	while (++i < data->ph_num)
 	{
@@ -89,9 +89,6 @@ int	*create_children(t_data *data)
 			exit(0);
 		}
 		else
-			pids[i] = pid;
+			data->pid[i] = pid;
 	}
-	for (size_t j = 0; pids[j]; j++)
-		printf("philo [%zu] pid [%d] ", j, pid);
-	return (pids);
 }

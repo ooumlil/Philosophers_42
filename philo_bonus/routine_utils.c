@@ -6,7 +6,7 @@
 /*   By: ooumlil <ooumlil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 01:06:08 by ooumlil           #+#    #+#             */
-/*   Updated: 2022/07/05 01:08:45 by ooumlil          ###   ########.fr       */
+/*   Updated: 2022/07/06 05:10:39 by ooumlil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,16 @@ long long	get_time(void)
 
 	gettimeofday(&time, NULL);
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
+void	kill_children(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	waitpid(-1, NULL, 0);
+	while (++i < data->ph_num)
+		kill(data->pid[i], SIGKILL);
+	free(data->philo->ph);
+	free(data->pid);
 }

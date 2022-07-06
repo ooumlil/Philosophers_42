@@ -6,7 +6,7 @@
 /*   By: ooumlil <ooumlil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 00:26:43 by ooumlil           #+#    #+#             */
-/*   Updated: 2022/07/05 05:00:37 by ooumlil          ###   ########.fr       */
+/*   Updated: 2022/07/06 05:15:29 by ooumlil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	ft_atoi(const char *str)
 	return (sign * result);
 }
 
-void	arguments_check(char **av, int ac)
+void	check_nd_assign(char **av, int ac, t_data *data)
 {
 	int	i;
 
@@ -50,11 +50,6 @@ void	arguments_check(char **av, int ac)
 	while (av[++i])
 		if (ft_atoi(av[i]) <= 0)
 			exit(1);
-}
-
-void	assign_data_b(char **av, int ac, t_data *data)
-{
-
 	data->ph_num = ft_atoi(av[1]);
 	data->t2die = ft_atoi(av[2]);
 	data->t2eat = ft_atoi(av[3]);
@@ -68,14 +63,30 @@ void	assign_data_b(char **av, int ac, t_data *data)
 		exit(1);
 }
 
-void	kill_children(t_data *data, int *pid)
+void	fill_philos(t_data *data)
 {
 	int	i;
 
-	i = -1;
-	waitpid(-1, NULL, 0);
-	while (++i < data->ph_num)
-		kill(pid[i], SIGKILL);
-	free(data->philo->ph);
-	free(pid);
+	i = 0;
+	data->philo = malloc(sizeof(t_philo) * data->ph_num);
+	data->time = get_time();
+	while (i < data->ph_num)
+	{
+		data->philo->last_meal = data->time;
+		data->philo[i].id = i + 1;
+		data->philo[i].data = data;
+		data->state = 0;
+		data->full = 0;
+		i++;
+	}
+}
+
+void	init_sems(t_data *data)
+{
+	sem_unlink("semap");
+	sem_unlink("print");
+	create_children(data);
+	sem_close(data->philo->semap);
+	sem_close(data->philo->print);
+	kill_children(data);
 }
